@@ -1,0 +1,36 @@
+{
+  "retrieved_utc": "2026-10-29T23:02:33.431516+00:00",
+  "year": 2026,
+  "metadata_url": "https://dadosabertos.tse.jus.br/api/3/action/package_show?id=resultados-2026",
+  "files": [
+    {
+      "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_secao/votacao_secao_2026_BR.zip",
+      "file": "data/raw/2026/votacao_secao_2026_BR.zip",
+      "bytes": 241891087,
+      "sha256": "c928321f63f2d095706fca73d4607c048d2ada23bda6876455d6911aaf1bc9c1",
+      "resource_name": "Presidente - Votação por seção eleitoral - 2026"
+    },
+    {
+      "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_secao/detalhe_votacao_secao_2026.zip",
+      "file": "data/raw/2026/detalhe_votacao_secao_2026.zip",
+      "bytes": 234357769,
+      "sha256": "8ef9ce3a85cde260471faf7a83a9b4f5ccf3993fdda942aacaa658574344789c",
+      "resource_name": "Detalhe da apuração por seção eleitoral"
+    },
+    {
+      "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/detalhe_votacao_munzona/detalhe_votacao_munzona_2026.zip",
+      "file": "data/raw/2026/detalhe_votacao_munzona_2026.zip",
+      "bytes": 4186942,
+      "sha256": "14edaf15717004f4b7d87946e0bf05b3bb59a5aded99a9cf0169ec44f4a77ccd",
+      "resource_name": "Detalhe da apuração por município e zona"
+    },
+    {
+      "url": "https://cdn.tse.jus.br/estatistica/sead/odsele/votacao_candidato_munzona/votacao_candidato_munzona_2026.zip",
+      "file": "data/raw/2026/votacao_candidato_munzona_2026.zip",
+      "bytes": 467087138,
+      "sha256": "a48e596799980d6912a1a8a589a14404a31e2a0db01d7fe7efd346d429ca6a3c",
+      "resource_name": "Votação nominal por município e zona"
+    }
+  ],
+  "tse_notes": "Relatórios de totalização - Detalhe da apuração por município e zona/seção - Votação nominal/partido por município e zona - Votação por seção eleitoral\r\n\r\n***                 \r\n__Informação importante:__\r\nDurante o processo de transferência temporária de eleitoras e eleitores, 39 registros permaneceram também vinculados às respectivas seções de origem. Em razão disso, os arquivos de resultados e de TTE apresentam o quantitativo de 158.745.502 registros de eleitoras e eleitores aptos.\r\nPara fins de apuração do quantitativo efetivo de eleitoras e eleitores aptos, esses 39 registros devem ser desconsiderados, resultando no total de 158.745.463 eleitoras e eleitores.\r\n\r\n***                 \r\n__ATENÇÃO!__\r\n\r\nUTILIZE SOFTWARE ADEQUADO PARA A COMPLETA VISUALIZAÇÃO DOS DADOS!\r\n\r\nArquivos de dados com um grande número de linhas (particularmente aqueles com extensão .csv e .txt) podem não ser visualizados em sua totalidade a depender do software utilizado. Por exemplo, o Microsoft Excel tem limitação de 1.048.576 linhas. Para evitar o carregamento incompleto do arquivo, utilize softwares com suporte para abrir grande volume de dados ou aplique técnicas específicas para seu processamento.\r\n\r\nConfira algumas alternativas a seguir:\r\n\r\nUse ferramentas de análise estatística, de Business Intelligence (BI), de banco de dados ou de análise de dados;\r\nAbra o arquivo no Excel usando a opção Obter Dados: utilize o Power Query para carregar o conjunto de dados completo e analisá-lo com tabelas dinâmicas;\r\nUse programas de editores de texto com suporte para grandes volumes de dados;\r\nUse qualquer outra ferramenta que suporte arquivos de grande volume de dados."
+}

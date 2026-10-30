@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Between the rounds · Brazil 2026</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.mjs"></script>
+</head>
+<body>
+  <header class="page-header">
+    <div class="eyebrow"><span class="brand-mark"></span>ELECTION TRANSITIONS / BRAZIL 2026</div>
+    <h1>Between the rounds</h1>
+    <p class="intro">Follow the estimated movement of voters from the first round to the runoff.</p>
+    <div class="header-meta"><span>5,571 municipalities</span><span>Official TSE source data</span><span>150 bootstrap resamples</span></div>
+  </header>
+  <main>
+    <section class="map-section" aria-labelledby="map-heading">
+      <div class="section-heading"><div><div class="eyebrow">THE GEOGRAPHY OF THE CHANGE</div><h2 id="map-heading">Who gained more votes?</h2><p class="scope">Color shows which candidate gained more between rounds. “+N” shows the size of that gain advantage. Click an area to open its flowchart.</p></div><button id="map-country" type="button">View Brazil flowchart</button></div>
+      <div class="map-controls">
+        <label>Map level<select id="map-level"><option value="municipality">Municipality</option><option value="state" selected>State / UF</option><option value="region">Region</option></select></label>
+        <label>Color intensity<select id="map-scale"><option value="log" selected>Soft logarithmic</option><option value="linear">Linear</option></select></label>
+        <label id="map-filter-field" hidden>Municipality map extent<select id="map-filter" aria-label="Limit municipality map to a state"></select></label>
+        <div class="map-zoom"><button type="button" id="map-zoom-in" aria-label="Zoom map in">+</button><button type="button" id="map-zoom-out" aria-label="Zoom map out">−</button><button type="button" id="map-reset">Reset view</button><button type="button" id="map-selected" disabled>Zoom to selection</button></div>
+      </div>
+      <div class="map-layout">
+        <div class="map-canvas"><svg id="election-map" viewBox="0 0 960 760" aria-labelledby="map-title map-description"><title id="map-title">Candidate with the greater vote gain between rounds</title><desc id="map-description">Click or keyboard-select a municipality, state, or region. Blue means Flávio gained more votes between rounds; red means Lula gained more. Both candidates use the same intensity scale. Thin outlines show states and slightly heavier outlines show regions at every level. Drag to pan, use the zoom controls or Ctrl and scroll to zoom.</desc><g id="map-areas"></g></svg><div class="map-border-key" aria-hidden="true"><span><i></i>State / UF</span><span><i></i>Region</span></div></div>
+        <aside class="map-details" aria-label="Map area results"><div class="eyebrow">OBSERVED VOTE CHANGE</div><h3 id="map-area-name">Choose an area</h3><dl><dt>Lula · change</dt><dd id="map-delta-lula">—</dd><dt>Flávio · change</dt><dd id="map-delta-flavio">—</dd><dt>Gain advantage</dt><dd id="map-margin-change">—</dd></dl><p id="map-selection-note" class="small" aria-live="polite">Click a colored area to open its flowchart.</p><p class="small map-explainer">“Lula +368” means Lula gained 368 more votes than Flávio between rounds; “Flávio +368” means the reverse. Equal gains use a neutral color. This compares observed totals, not individual switching.</p></aside>
+      </div>
+      <div class="map-legend"><div class="map-legend-labels"><span>← Flávio gained more</span><span>Lula gained more →</span></div><div class="map-legend-bar"></div><div id="map-legend-ticks" class="map-legend-ticks"></div><p id="map-scale-note" class="small">Gain advantage in votes · soft logarithmic intensity · equal gains stay neutral</p></div>
+      <p id="map-status" class="small" role="status">Loading map…</p>
+      <p class="map-footnote small">Drag to pan · use + / − or Ctrl + scroll to zoom · municipality view can focus on one UF. Colors use every municipality's full observed totals, including those without a flow model. <a href="https://www.ibge.gov.br/geociencias/organizacao-do-territorio/malhas-territoriais/15774-malhas.html" target="_blank" rel="noreferrer">IBGE 2025 boundaries</a> · <a href="data/maps/manifest.json">Map data provenance</a></p>
+    </section>
+    <section class="workspace" aria-label="Flow explorer">
+      <div class="source-tabs" role="tablist" aria-label="Data source">
+        <button id="source-thread" role="tab" aria-selected="true" type="button">Thread reference</button>
+        <button id="source-municipality" role="tab" aria-selected="false" type="button">Explore geography</button>
+      </div>
+      <div id="municipality-controls" class="municipality-controls" hidden>
+        <label>Geographic level<select id="aggregate-level"><option value="municipality">Municipality</option><option value="state">State / UF</option><option value="region">Region</option><option value="country">Brazil</option></select></label>
+        <label id="aggregate-field" hidden><span id="aggregate-options-label">State</span><select id="aggregate-options" aria-label="Choose state or region"></select></label>
+        <label id="city-search-field">Find a municipality<input id="city-search" type="search" placeholder="Name, UF or TSE code" autocomplete="off" aria-controls="city-options"></label>
+        <label id="city-options-field">Municipality<select id="city-options" aria-label="Choose municipality"></select></label>
+        <label>Model<select id="model"><option value="full">Full model · switching allowed</option><option value="no_cross">No switching between finalists</option></select></label>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite">Loading election results…</div>
+      <div class="section-heading">
+        <div><div id="source-label" class="eyebrow"></div><h2 id="city-title">Lebon Régis, SC</h2><p id="scope" class="scope"></p></div>
+        <div id="coverage" class="coverage"></div>
+      </div>
+      <div id="provenance" class="provenance"></div>
+      <div class="diagram-toolbar">
+        <div class="view-tabs" role="tablist" aria-label="Flowchart style">
+          <button type="button" id="view-sankey" role="tab" aria-selected="true">Sankey flows</button>
+          <button type="button" id="view-schematic" role="tab" aria-selected="false">Labeled arrows</button>
+        </div>
+        <div class="display-options">
+          <label><input type="checkbox" id="show-retained" checked> Retained voters</label>
+          <label><input type="checkbox" id="show-values"> Flow values</label>
+          <label class="minimum-flow">Min. voters<input type="number" id="minimum-flow" min="0" value="0" step="1" inputmode="numeric"></label>
+        </div>
+        <button id="download-svg" class="export-button" type="button">Download SVG</button>
+      </div>
+      <div class="diagram-columns"><span>FIRST ROUND · 04 OCT</span><span>RUNOFF · 25 OCT</span></div>
+      <div class="diagram-scroll"><svg id="flow-chart" viewBox="0 0 1100 640" role="img" aria-labelledby="chart-title chart-description"><title id="chart-title">Voter transition flowchart</title><desc id="chart-description">Five first-round voter groups connect to four runoff groups. Select a flow to inspect its estimate.</desc></svg></div>
+      <div class="diagram-footer"><span id="diagram-note">Ribbon thickness is proportional to the estimated number of voters.</span><span>Hover, tap, or focus a flow to inspect it.</span><span class="pan-hint">Scroll the diagram horizontally to see both rounds.</span></div>
+      <div id="empty-chart" class="empty-state" hidden></div>
+    </section>
+    <aside class="inspector" aria-label="Selected flow">
+      <div class="eyebrow">FLOW INSPECTOR</div>
+      <h2 id="flow-title">Choose a flow</h2>
+      <div id="flow-value" class="flow-value">—</div>
+      <div id="flow-unit" class="secondary">estimated voters</div>
+      <div id="flow-details" class="inspector-details" aria-live="polite">Select a ribbon or arrow to see its source, destination, and estimated size.</div>
+      <button id="clear-selection" class="quiet-button" type="button" hidden>Clear selection</button>
+      <hr>
+      <div class="eyebrow reading-title">READING THE DIAGRAM</div>
+      <ul class="reading-key">
+        <li><span class="key-dot lula"></span>Lula</li><li><span class="key-dot flavio"></span>Flávio Bolsonaro</li>
+        <li><span class="key-dot other"></span>Other candidates</li><li><span class="key-dot invalid"></span>Blank / null</li>
+        <li><span class="key-dot abstention"></span>Abstention</li>
+      </ul>
+      <p class="small">Colors follow the first-round group. Node totals include all flows, including those hidden by the display options.</p>
+      <div id="fit-note" class="fit-note"></div>
+    </aside>
+    <section class="gains-section">
+      <div class="section-heading"><div><div class="eyebrow">WHERE THE NET GAIN COMES FROM</div><h2>Two paths to a runoff total</h2></div><span id="gain-scope" class="small"></span></div>
+      <div id="gain-charts" class="gain-charts"></div>
+    </section>
+    <section class="totals-section">
+      <div class="section-heading"><div><div class="eyebrow">OBSERVED RESULTS</div><h2>Totals and model coverage</h2></div></div>
+      <div class="table-scroll"><table><thead><tr><th>Group</th><th id="observed-round-one">Round 1 · full municipality</th><th id="observed-round-two">Runoff · full municipality</th><th>Round 1 · diagram</th><th>Runoff · diagram</th></tr></thead><tbody id="totals-body"></tbody></table></div>
+    </section>
+    <section class="method-section">
+      <h2>What these flows establish</h2>
+      <p>The thread reference reproduces the estimated flows shown in your screenshots. Municipality views use our explicit common-transition model fitted to matched, validated sections. Individual votes and voter movements are not observed.</p>
+      <p>The full model permits switching between finalists. The comparison model prohibits it. Model flows reconcile to the analyzed municipality margins by construction; individual section fits can have residuals. Bootstrap ranges show section-resampling sensitivity under the model.</p>
+      <p>Different source snapshots and excluded sections can change the totals. The thread uses all 30 sections of Lebon Régis; our current matched-electorate analysis retains 29. Machine-log timing has not been analyzed.</p>
+      <p>State, region, and Brazil diagrams sum the available municipal model matrices; they are not new geographic regressions. Their coverage excludes municipalities without a fitted matrix and sections omitted from those fits. Full observed geographic totals include every municipality in that area. Aggregate bootstrap intervals have not been computed; municipal interval endpoints are not added together. Brazil excludes overseas voting.</p>
+      <div class="download-links"><a href="municipalities.csv" download>Municipality results</a><a href="estimated_flows.csv.gz" download>Flow estimates</a><a href="reference_audit.csv" download>Reconciliation audit</a><a href="methodology.md">Full methodology</a></div>
+    </section>
+  </main>
+  <footer>Public TSE election data · Thread reference transcribed from supplied screenshots · <a href="https://github.com/pedro-loures/brazil-election-transitions-2026" target="_blank" rel="noreferrer">Source code and data</a></footer>
+</body>
+</html>

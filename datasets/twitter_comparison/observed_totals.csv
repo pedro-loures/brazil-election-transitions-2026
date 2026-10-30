@@ -1,0 +1,17 @@
+metric,round,thread,experiment,difference
+a,1,2899,2899,0
+a,2,3503,3503,0
+b,1,3245,3245,0
+b,2,3481,3481,0
+other,1,456,456,0
+other,2,0,0,0
+invalid,1,313,313,0
+invalid,2,182,182,0
+valid,1,6600,6600,0
+valid,2,6984,6984,0
+turnout,1,6913,6913,0
+turnout,2,7166,7166,0
+abstention,1,1824,1824,0
+abstention,2,1571,1572,1
+eligible,1,8737,8737,0
+eligible,2,8737,8738,1

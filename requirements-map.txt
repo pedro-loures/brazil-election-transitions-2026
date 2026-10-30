@@ -1,0 +1,3 @@
+# Only needed to rebuild the local GeoJSON files from the IBGE shapefile.
+pyshp>=2.3,<3
+shapely>=2.1,<3

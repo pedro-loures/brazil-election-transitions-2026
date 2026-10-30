@@ -1,0 +1,43 @@
+{
+  "year": 2026,
+  "finalists": {
+    "a": {
+      "number": 13,
+      "name": "LUIZ INÁCIO LULA DA SILVA"
+    },
+    "b": {
+      "number": 22,
+      "name": "FLAVIO NANTES BOLSONARO"
+    }
+  },
+  "election_ids": {
+    "1": [
+      6257
+    ],
+    "2": [
+      6258
+    ]
+  },
+  "scope": "Domestic municipalities; ZZ retained in source data and excluded from municipal analysis",
+  "section_rounds": 998496,
+  "usable_section_rounds": 998414,
+  "analysis_utc": "2026-10-29T23:11:55.465471+00:00",
+  "bootstrap": 150,
+  "seed": 20261029,
+  "min_model_sections": 10,
+  "municipalities": 5571,
+  "domestic_section_union": 497897,
+  "analyzed_sections": 442108,
+  "model_status_counts": {
+    "ok": 5134,
+    "too_few_sections": 437
+  },
+  "logs_status": "not_loaded",
+  "model": "common-transition constrained least squares; not an exact reconstruction of thread",
+  "software": {
+    "python": "3.10.12",
+    "numpy": "2.2.6",
+    "pandas": "2.2.3",
+    "scipy": "1.15.2"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "year": 2026,
+  "finalists": {
+    "a": {
+      "number": 13,
+      "name": "LUIZ INÁCIO LULA DA SILVA"
+    },
+    "b": {
+      "number": 22,
+      "name": "FLAVIO NANTES BOLSONARO"
+    }
+  },
+  "election_ids": {
+    "1": [
+      6257
+    ],
+    "2": [
+      6258
+    ]
+  },
+  "scope": "Domestic municipalities; ZZ retained in source data and excluded from municipal analysis",
+  "section_rounds": 998496,
+  "usable_section_rounds": 998414
+}

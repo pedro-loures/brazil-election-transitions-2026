@@ -1,0 +1,178 @@
+<div id="brazil-municipalities-view">
+  <style>
+    #brazil-municipalities-view {color:var(--foreground);width:100%;}
+    #brazil-municipalities-view .city-title {margin-top:20px;}
+    #brazil-municipalities-view .chart-wrap {width:100%;margin:12px 0;}
+    #brazil-municipalities-view .round-legend {display:flex;gap:18px;flex-wrap:wrap;margin:10px 0;}
+    #brazil-municipalities-view .round-key {display:inline-flex;align-items:center;gap:7px;}
+    #brazil-municipalities-view .round-key span {width:12px;height:12px;display:inline-block;}
+    #brazil-municipalities-view .round-key button {background:transparent;border:0;padding:0;color:var(--foreground);font:inherit;}
+    #brazil-municipalities-view .election-chart {display:block;width:100%;}
+    #brazil-municipalities-view .election-chart text {fill:var(--foreground);font-size:12px;}
+    #brazil-municipalities-view .election-chart .domain,
+    #brazil-municipalities-view .election-chart .tick line {stroke:var(--border);}
+    #brazil-municipalities-view .detail-line {margin:12px 0;}
+    #brazil-municipalities-view .source-value {font-variant-numeric:tabular-nums;}
+    #brazil-municipalities-view [hidden] {display:none;}
+  </style>
+  <h2>Brazil’s municipalities · 2026</h2>
+  <div class="viz-controls">
+    <label class="form-label">Search municipality, UF or TSE code
+      <input class="form-control" id="bm-search" type="search" placeholder="Lebon Régis" autocomplete="off">
+    </label>
+    <label class="form-label">Municipality
+      <select class="form-select" id="bm-city" aria-label="Municipality"></select>
+    </label>
+  </div>
+  <div id="bm-matches" class="text-small text-muted" aria-live="polite"></div>
+  <h3 id="bm-name" class="city-title"></h3>
+  <div id="bm-coverage" class="text-small detail-line"></div>
+  <div class="round-legend" aria-label="Election round">
+    <div class="round-key"><span style="background:var(--viz-series-1)"></span><button class="cursor-interaction" id="bm-round1" type="button" aria-pressed="true">Round 1</button></div>
+    <div class="round-key"><span style="background:var(--viz-series-2)"></span><button class="cursor-interaction" id="bm-round2" type="button" aria-pressed="true">Round 2</button></div>
+  </div>
+  <div class="chart-wrap" id="bm-chart-wrap">
+    <svg class="election-chart" id="bm-chart" role="img" aria-label="Observed votes for each finalist in both rounds"></svg>
+  </div>
+  <div id="bm-gains" class="detail-line tabular-nums" aria-live="polite"></div>
+  <div id="bm-accounting" class="text-small detail-line"></div>
+  <hr>
+  <h3>Estimated sources of gains</h3>
+  <div id="bm-model-scope" class="text-small detail-line"></div>
+  <div id="bm-model-table" class="table-responsive"></div>
+  <div id="bm-diagnostics" class="text-small detail-line"></div>
+  <div id="bm-limitations" class="text-small">Full model · common transition rates across sections · rounded point estimates · individual movements inferred · timing logs not analyzed</div>
+  <script type="application/json" id="bm-data">__MUNICIPAL_DATA__</script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script>
+(() => {
+  const root = document.getElementById('brazil-municipalities-view');
+  const rows = JSON.parse(root.querySelector('#bm-data').textContent);
+  const $ = id => root.querySelector('#'+id);
+  const search = $('bm-search'), picker = $('bm-city');
+  const fmt = value => value == null ? '—' : Number(value).toLocaleString('en-US');
+  const signed = value => (value>0?'+':'')+fmt(value);
+  const clean = value => String(value).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const lookup = new Map(rows.map(r=>[String(r[1]),r]));
+  const saved = window.openai?.widgetState;
+  let current = lookup.get(String(saved?.modelContent?.municipality_code)) || lookup.get('81914') || rows[0];
+  let visible = [true,true];
+  if (Array.isArray(saved?.privateContent?.visible) && saved.privateContent.visible.length===2) visible=saved.privateContent.visible.map(Boolean);
+  let query = typeof saved?.privateContent?.query === 'string' ? saved.privateContent.query : '';
+  search.value=query;
+
+  function persist() {
+    if (typeof window.openai?.setWidgetState !== 'function') return;
+    window.openai.setWidgetState({
+      modelContent:{municipality:current[2],uf:current[0],municipality_code:current[1],
+        observed_lula_gain:current[4]-current[3],observed_flavio_gain:current[6]-current[5],
+        analyzed_sections:current[11],total_sections:current[10],electorate_coverage:current[12]/1000},
+      privateContent:{query,visible}
+    }).catch(()=>{});
+  }
+
+  function fillPicker() {
+    const term=clean(query.trim());
+    const matches=rows.filter(r=>clean(r[2]+' '+r[0]+' '+r[1]).includes(term));
+    const shown=matches.slice(0,80);
+    if (!shown.includes(current)) shown.unshift(current);
+    picker.replaceChildren(...shown.map(r=>{
+      const option=document.createElement('option'); option.value=String(r[1]);
+      option.textContent=r[2]+' · '+r[0]; option.selected=r===current; return option;
+    }));
+    $('bm-matches').textContent=fmt(matches.length)+' matches · '+fmt(rows.length)+' municipalities';
+  }
+
+  function draw() {
+    if (typeof d3==='undefined') {
+      $('bm-chart').setAttribute('aria-label','Chart unavailable; observed counts are shown below');
+      return;
+    }
+    const host=$('bm-chart-wrap'), svg=d3.select($('bm-chart'));
+    const width=Math.max(280,host.getBoundingClientRect().width);
+    const height=260, left=90, right=12, top=12, bottom=height-56;
+    const values=[current[3],current[4],current[5],current[6]];
+    const extent=d3.extent([0,...values]), upper=Math.max(1,extent[1]);
+    const compact=width<500;
+    const x=d3.scaleLinear().domain([0,upper*1.05]).range([left+2,width-right-(compact?68:88)]);
+    svg.attr('viewBox',`0 0 ${width} ${height}`).attr('height',height).selectAll('*').remove();
+    svg.append('title').text(current[2]+': observed presidential votes in both rounds');
+    svg.append('rect').attr('data-chart-frame','').attr('x',left).attr('y',top)
+      .attr('width',width-left-right).attr('height',bottom-top).attr('fill','none').attr('stroke','var(--border)');
+    const axis=svg.append('g').attr('transform',`translate(0,${bottom})`).call(
+      d3.axisBottom(x).ticks(compact?3:5).tickFormat(d3.format('~s')));
+    axis.selectAll('text').attr('fill','var(--foreground)');
+    svg.append('text').attr('class','axis-title').attr('data-axis','x').attr('x',(left+width-right)/2)
+      .attr('y',height-9).attr('text-anchor','middle').text('Observed votes (count)');
+    svg.append('text').attr('class','axis-title').attr('data-axis','y').attr('transform',`translate(15,${(top+bottom)/2}) rotate(-90)`)
+      .attr('text-anchor','middle').text('Candidate');
+    const groups=[['Lula',current[3],current[4]],['Flávio',current[5],current[6]]];
+    groups.forEach((g,gi)=>{
+      const y=top+26+gi*88;
+      svg.append('text').attr('x',left-9).attr('y',y+20).attr('text-anchor','end').text(g[0]);
+      [0,1].forEach(round=>{
+        if (!visible[round]) return;
+        const v=g[round+1], barY=y+round*28;
+        svg.append('rect').attr('x',x(0)).attr('y',barY).attr('width',Math.max(0,x(v)-x(0))).attr('height',17)
+          .attr('fill',`var(--viz-series-${round+1})`);
+        svg.append('text').attr('x',x(v)+5).attr('y',barY+13).text(fmt(v));
+      });
+    });
+    // Axis labels are measured at the actual host width; trim optional ticks if needed.
+    const ticks=axis.selectAll('.tick text').nodes();
+    for(let i=1;i<ticks.length;i++) {
+      const previous=ticks[i-1].getBoundingClientRect(), next=ticks[i].getBoundingClientRect();
+      if(previous.right+4>next.left) ticks[i].style.display='none';
+    }
+  }
+
+  function render() {
+    const r=current;
+    $('bm-name').textContent=r[2]+' · '+r[0];
+    $('bm-coverage').textContent='Observed totals: full municipality · Model coverage: '+fmt(r[11])+'/'+fmt(r[10])+' sections, '+(r[12]/10).toFixed(1)+'% of electorate';
+    $('bm-gains').textContent='Full municipality gains: Lula '+signed(r[4]-r[3])+' · Flávio '+signed(r[6]-r[5]);
+    $('bm-accounting').textContent='First-round other candidates: '+fmt(r[7])+' · Turnout change: '+signed(r[8])+' · Blank/null change: '+signed(r[9]);
+    if(r[19]) {
+      const f=r[19];
+      $('bm-model-scope').textContent='Analyzed sections only · Lula gain '+signed(r[15])+' · Flávio gain '+signed(r[16]);
+      const items=[['Other candidates',f[0],f[5]],['Previous blank/null voters',f[1],f[6]],
+        ['Previous abstainers',f[2],f[7]],['Lost to blank/null or abstention',-f[3],-f[8]],
+        ['Net switching between finalists',f[4],-f[4]]];
+      const table=document.createElement('table');table.className='table table-sm';
+      const head=document.createElement('thead'), headRow=document.createElement('tr');
+      for(const label of ['Estimated source','Lula','Flávio']) {
+        const th=document.createElement('th');th.textContent=label;headRow.append(th);
+      }
+      head.append(headRow);table.append(head);
+      const body=document.createElement('tbody');
+      items.forEach(item=>{
+        const tr=document.createElement('tr');item.forEach((v,i)=>{
+          const td=document.createElement('td');td.textContent=i?signed(v):v;
+          if(i)td.className='text-end';tr.append(td);
+        });body.append(tr);
+      });table.append(body);$('bm-model-table').replaceChildren(table);
+      $('bm-diagnostics').textContent='Section fit RMSE: '+(r[17]/10).toFixed(1)+' votes · Successful resamples: '+fmt(r[18])+'/150 · Correlations with net new valid votes: Lula '+(r[13]==null?'—':(r[13]/1000).toFixed(3))+'; Flávio '+(r[14]==null?'—':(r[14]/1000).toFixed(3));
+    } else {
+      $('bm-model-scope').textContent='Insufficient usable sections for flow modeling';
+      $('bm-model-table').replaceChildren();
+      $('bm-diagnostics').textContent='Observed results available; no transition estimates assigned';
+    }
+    [0,1].forEach(i=>$('bm-round'+(i+1)).setAttribute('aria-pressed',String(visible[i])));
+    draw();
+  }
+  search.addEventListener('input',()=>{query=search.value;fillPicker();});
+  picker.addEventListener('change',()=>{current=lookup.get(picker.value)||current;render();persist();});
+  [0,1].forEach(i=>$('bm-round'+(i+1)).addEventListener('click',()=>{visible[i]=!visible[i];render();persist();}));
+  window.addEventListener('openai:set_globals',event=>{
+    const state=event.detail?.globals?.widgetState;
+    const next=lookup.get(String(state?.modelContent?.municipality_code));
+    if(!next)return;current=next;
+    if(typeof state?.privateContent?.query==='string'){query=state.privateContent.query;search.value=query;}
+    if(Array.isArray(state?.privateContent?.visible)&&state.privateContent.visible.length===2)visible=state.privateContent.visible.map(Boolean);
+    fillPicker();render();
+  });
+  fillPicker();render();
+  if(typeof ResizeObserver==='function')new ResizeObserver(draw).observe($('bm-chart-wrap'));
+})();
+</script>

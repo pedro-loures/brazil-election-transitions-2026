@@ -1,0 +1,27 @@
+{
+  "source": "Manual transcription of the user-supplied thread screenshots",
+  "municipality": "Lebon Régis",
+  "municipality_code": 81914,
+  "full_section_correlations": {
+    "lula": 0.8326146656174915,
+    "flavio": 0.021942010804869738
+  },
+  "proportional_upper_failures": 12,
+  "proportional_lower_failures": 1,
+  "saved_analyzed_sections": 29,
+  "all_sections": 30,
+  "counterfactual_change": "Section 57 round-2 abstention 40 -> 39; no official files changed",
+  "distances_from_rounded_thread_matrix": {
+    "scenario_30_weighted": {
+      "half_L1_voters": 110.65269497113744,
+      "electorate_percentage": 1.26648386140709,
+      "section_rmse_votes": 5.255061635495736
+    },
+    "scenario_30_unweighted": {
+      "half_L1_voters": 22.53222112421903,
+      "electorate_percentage": 0.25789425574246344,
+      "section_rmse_votes": 5.244700157015133
+    }
+  },
+  "timing_comparison": "Not verified: raw machine logs not processed"
+}

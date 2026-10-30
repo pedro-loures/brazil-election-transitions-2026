@@ -1,0 +1,139 @@
+{
+  "year": 2026,
+  "scope": "Domestic municipality units; overseas voting excluded from analysis",
+  "raw_archives_included": false,
+  "files": [
+    {
+      "path": "datasets/2026/results/estimated_flows.csv.gz",
+      "restore_path": "results/2026/estimated_flows.csv.gz",
+      "bytes": 6444927,
+      "sha256": "9ed89c9a2afdc373689a2be6d11350549bba008fc049e6785dd923c6df9d7742"
+    },
+    {
+      "path": "datasets/2026/results/municipalities.csv",
+      "restore_path": "results/2026/municipalities.csv",
+      "bytes": 3109694,
+      "sha256": "ed933f6ed0066056527ce77e9f5a22ede3eea7763f126e0c179cd23e528041cb"
+    },
+    {
+      "path": "datasets/2026/results/national_overview.pdf",
+      "restore_path": "results/2026/national_overview.pdf",
+      "bytes": 17335,
+      "sha256": "dd52f4c038cab3b12f490caec016e8109e9c5fc521db4fd84b876a44e18d3f5c"
+    },
+    {
+      "path": "datasets/2026/results/national_overview.png",
+      "restore_path": "results/2026/national_overview.png",
+      "bytes": 81167,
+      "sha256": "d7c5ba7e28db9a89f32f62d6af076ba1866f283ecf552a0bd70d119912ff6b6a"
+    },
+    {
+      "path": "datasets/2026/results/polling_places.csv.gz",
+      "restore_path": "results/2026/polling_places.csv.gz",
+      "bytes": 2573156,
+      "sha256": "630df3f6113c70cf3f1f2bdc8ad18fa486bd080a10196c61eaaa881188710952"
+    },
+    {
+      "path": "datasets/2026/results/reference_audit.csv",
+      "restore_path": "results/2026/reference_audit.csv",
+      "bytes": 1293275,
+      "sha256": "71ce1090dcbf0019e1a33d838022198c7d7878a5c18fc0a9cebb2eb330d0e929"
+    },
+    {
+      "path": "datasets/2026/results/run.json",
+      "restore_path": "results/2026/run.json",
+      "bytes": 978,
+      "sha256": "0ef436188b255aefc11caa028e205930a21bed59f4728897e16ee8934c289bc6"
+    },
+    {
+      "path": "datasets/2026/results/sections.csv.gz",
+      "restore_path": "results/2026/sections.csv.gz",
+      "bytes": 34158668,
+      "sha256": "3886741776d87d55256a63fce217bac5c52c28a6acde213daee5a4d84d198b1e"
+    },
+    {
+      "path": "datasets/2026/results/summary.json",
+      "restore_path": "results/2026/summary.json",
+      "bytes": 712,
+      "sha256": "d58a23990de19ff13178a8a7bbf082d8720c20040008926f8c457325c7b83599"
+    },
+    {
+      "path": "datasets/2026/processed/candidate_registry.csv",
+      "restore_path": "data/processed/2026/candidate_registry.csv",
+      "bytes": 826,
+      "sha256": "dceef963ce1d6db3baa0f6c29e72ee0e97432d061ffc0094f6e980001e6b8350"
+    },
+    {
+      "path": "datasets/2026/processed/candidates.csv",
+      "restore_path": "data/processed/2026/candidates.csv",
+      "bytes": 808,
+      "sha256": "23f8ffaacb73a1f39ccca9a11f59ecfdf180e7e9cb5e36aa9407223985a9154a"
+    },
+    {
+      "path": "datasets/2026/processed/metadata.json",
+      "restore_path": "data/processed/2026/metadata.json",
+      "bytes": 446,
+      "sha256": "88e9b1aa65a2247915261072091741cec5ab084fef0b1261a4c2fc89be88bfcd"
+    },
+    {
+      "path": "datasets/2026/processed/municipal_reference.csv",
+      "restore_path": "data/processed/2026/municipal_reference.csv",
+      "bytes": 658078,
+      "sha256": "54537ea4083055821ebed97fd58776d4659cc8331f7d1fa285e4026bbb2bf7cb"
+    },
+    {
+      "path": "datasets/2026/processed/municipality_candidate_votes.csv.gz",
+      "restore_path": "data/processed/2026/municipality_candidate_votes.csv.gz",
+      "bytes": 411143,
+      "sha256": "5a53d1deaba754cc329cd4ef251a4933ff8161495608f860b8359f232825656c"
+    },
+    {
+      "path": "datasets/2026/processed/section_rounds.csv.gz",
+      "restore_path": "data/processed/2026/section_rounds.csv.gz",
+      "bytes": 22042905,
+      "sha256": "5544fad3f33687e3ee1a4bfe75a3d145e768a1b2b9d335670ce275aee08270da"
+    },
+    {
+      "path": "datasets/twitter_comparison/flow_comparison.csv",
+      "restore_path": "results/twitter_comparison/flow_comparison.csv",
+      "bytes": 1970,
+      "sha256": "246b4d223f19b0a21068723bb823465ee7f9964c7a74cc8c068dc6c29acff9f4"
+    },
+    {
+      "path": "datasets/twitter_comparison/lebon_sections.csv",
+      "restore_path": "results/twitter_comparison/lebon_sections.csv",
+      "bytes": 8684,
+      "sha256": "44e64a2ddfc82e0185c1ae4f27c9aa0f2c2a084f7507c4e7ff48a20a229d9d7a"
+    },
+    {
+      "path": "datasets/twitter_comparison/observed_totals.csv",
+      "restore_path": "results/twitter_comparison/observed_totals.csv",
+      "bytes": 358,
+      "sha256": "b0afa97f9c4d082c4d10852497f03c376f430cfc72df3e07dbfe8f9e182b8391"
+    },
+    {
+      "path": "datasets/twitter_comparison/summary.json",
+      "restore_path": "results/twitter_comparison/summary.json",
+      "bytes": 946,
+      "sha256": "2af3deddb9461807de112d61a31700ae657bb11bca5b10249b5c812826a501bf"
+    },
+    {
+      "path": "datasets/2026/provenance/tse-source-manifest.json",
+      "restore_path": "data/raw/2026/manifest.json",
+      "bytes": 3437,
+      "sha256": "de6164e68ccc12681e7af51ad29b7af7ba3fe3e5bd440b3ad4b447d02813c3ee"
+    },
+    {
+      "path": "datasets/2026/provenance/map-source-manifest.json",
+      "restore_path": "results/2026/flowcharts/data/maps/manifest.json",
+      "bytes": 989,
+      "sha256": "0f7cbc6bc3ba509d03f4f6c61f355070004ab0f3d18da81173f005722c1f5649"
+    },
+    {
+      "path": "datasets/2026/provenance/tse-municipality-crosswalk.json",
+      "restore_path": "data/raw/geography/tse.json",
+      "bytes": 534026,
+      "sha256": "e4a2f2d45bac325f486e1866973fd65ae86744896d0f19e791b0bbb58d86e839"
+    }
+  ]
+}
