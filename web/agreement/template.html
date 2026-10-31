@@ -1,0 +1,15 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Election transitions: model agreement</title>
+<style>
+body{font:16px system-ui,sans-serif;color:#24354b;background:#f5f7fa;margin:0;padding:24px;max-width:1500px}h1{font-size:29px}h2{font-size:21px}label{display:inline-flex;align-items:center;gap:8px;margin:6px 14px 6px 0}select,button{font:inherit;padding:7px;border:1px solid #9caec1;border-radius:4px;background:white}#notice{background:#fff1d2;padding:16px;border-left:4px solid #ab7000}main{display:grid;grid-template-columns:1fr 1.2fr;gap:18px;margin:18px 0}.card{background:white;border:1px solid #cad4df;border-radius:8px;padding:18px;overflow:auto}svg{width:100%;background:#f0f5f9}path{stroke:white;stroke-width:.5}circle{stroke:white;stroke-width:1;cursor:pointer}table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:9px;text-align:left;border-bottom:1px solid #dce3eb}#detail{white-space:pre-line}.muted{color:#586b81;font-size:14px}@media(max-width:850px){main{grid-template-columns:1fr}}
+</style>
+<h1>Election transitions: agreement and stability</h1>
+<p id="notice">Loading actual completed fits…</p>
+<p>Expected transitions between rounds. Model agreement, posterior uncertainty, resampling stability and known-flow accuracy are separate evidence. Individual ballots remain unobserved.</p>
+<div><label>Municipality <select id="city"></select></label><label>Origin <select id="origin"></select></label><label>Destination <select id="destination"></select></label></div>
+<div><label>Support <select id="support"><option value="municipality">Municipality</option><option value="original_place">Original polling place</option><option value="section">Section</option></select></label><label>Unit <select id="unit"></select></label><label>Model <select id="family"></select></label></div>
+<div><label>Colour by <select id="metric"><option value="range">Across-model rate range (pp)</option><option value="agreement">Number of mutually agreeing families</option><option value="bootstrap">Paired-resample agreement (%)</option><option value="sd">Resampling rate SD (pp)</option><option value="prior">Prior sensitivity (% electorate)</option><option value="width">Posterior interval width (pp)</option><option value="estimate">Estimated rate (%)</option></select></label><label>Agreement subset <select id="subset"></select></label><button id="export">Export current view</button></div>
+<main><div class="card"><svg id="map" viewBox="0 0 800 800"></svg><p id="legend"></p><p class="muted">Gray: unavailable. Local points identify polling sites; co-located sections overlap. Points do not represent residential catchments.</p></div><div class="card"><h2 id="selected"></h2><p id="detail"></p><div id="table"></div></div></main>
+<section class="card"><h2>Known-flow consensus checks</h2><div id="simulation"></div><p class="muted">These are development results unless explicitly labelled independent validation. Agreement can be stable and wrong.</p></section>
+<script>/*__DATA__*/
+/*__APP__*/</script></html>

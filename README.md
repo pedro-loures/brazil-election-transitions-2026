@@ -16,7 +16,139 @@ See [the academic literature review](LITERATURE_REVIEW.md) for sources supportin
 and challenging each component, their relevance to this implementation, and
 priorities for methodological validation.
 
+## Nationwide combined model release
+
+The [national run and release plan](NATIONAL_COMBINED_RELEASE_PLAN.md) records the
+authorized replacement of the primary GitHub Pages map after a nationwide run.
+The combined model jointly estimates geographic effects and two behavioural
+regimes, with composition effects, overdispersion and conditional posterior
+intervals. A longer attempt is made for sampling warnings/timeouts. Missing new
+fits remain unavailable. The previous explorer will be preserved at `baseline.html`.
+
+This is an experimental national publication, not a claim of completed independent
+calibration. The completed pilot found accuracy gains on small usable subsets,
+low convergence rates, broad intervals and shared errors despite model agreement.
+The site displays coverage and computational warnings with the estimates.
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv-hierarchy/bin/python -m elections.national_combined prepare
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv-hierarchy/bin/python -m elections.national_combined run --workers 8
+.venv-hierarchy/bin/python -m elections.national_combined verify
+.venv-hierarchy/bin/python scripts/build_national_site.py
+```
+
+Progress and release state are recorded under `results/2026/national_combined/`.
+`scripts/release_national.py --publish` waits for the full run, checks the candidate
+at a project-site prefix, commits the data and replacement to `main`, then verifies
+the live Pages release. It requires a prepared isolated checkout and release-ready
+record; it never force-pushes. Dependencies for browser QA are in
+`requirements-publication.txt` (`python -m playwright install chromium` installs
+the browser). The existing primary site stays live until the release is ready.
+
+## Polling-place partial-pooling experiment
+
+The [polling-place plan](POLLING_PLACE_MODEL_PLAN.md) extends sections nested in
+municipalities with jointly fitted polling-place deviations. It preserves the
+national baseline and starts with a frozen 12-municipality pilot. See the
+[statistical specification](docs/hierarchy_specification.md) for the likelihood
+approximation, priors, sampling diagnostics, known-flow simulations, and the
+validation gate governing national expansion.
+
+Experimental outputs are under `results/2026/hierarchy_pilot/`, including an
+offline `report.html` with selectable estimate/reliability map layers, local
+tables, method comparisons, intervals, sensitivity, and investigation flags.
+The [execution report](HIERARCHY_PILOT_RESULTS.md) records the decision and
+limitations. These experimental artifacts do not modify the published website
+or replace the original national estimates.
+
+```bash
+python -m venv --system-site-packages .venv-hierarchy
+.venv-hierarchy/bin/python -m pip install -r requirements-hierarchy.txt
+MPLCONFIGDIR=/tmp/elections-matplotlib OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  .venv-hierarchy/bin/python -m elections.hierarchy_pilot --workers 4
+MPLCONFIGDIR=/tmp/elections-matplotlib OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  .venv-hierarchy/bin/python -m elections.hierarchy_simulation
+.venv-hierarchy/bin/python scripts/build_hierarchy_report.py
+.venv-hierarchy/bin/python scripts/verify_hierarchy_outputs.py
+```
+
+Completed fit and simulation files are resumable. Frozen source hashes are
+checked before resuming. Polling-place codes are paired with their electoral
+zone; only municipality polygons have verified map geometry in this experiment.
+
+## Population-stratified spatial experiment
+
+The [accepted spatial plan](SPATIAL_POOLING_PLAN.md) implements the subsequent
+[feasibility assessment](SPATIAL_POOLING_FEASIBILITY.md). The experiment freezes
+48 municipalities in five logarithmic population bins, with separate development
+and validation designs. Detailed IBGE boundary/register checks assign explicit
+verified, unresolved and missing coordinate statuses. Verification is source
+consistency, not field confirmation or voter geolocation.
+
+All 24 combinations of section target and geographic diameter are inventoried.
+Sections remain observations within groups; literal count aggregation is a
+separate arm. Matched municipal, administrative and geographic models distinguish
+grouping effects from a contextual/overdispersion extension. The latter uses
+regularized first-round composition effects and independent Dirichlet-multinomial
+origin rows, with an explicitly approximate column-margin likelihood.
+Overdispersion changes the margin variance; it does not reconstruct a separate
+latent transition matrix for every section. Reported flows remain allocations
+under the fitted mean probabilities. Recovery of genuinely different hidden
+section rates is therefore a robustness test, not guaranteed by this extension.
+
+The [execution report](SPATIAL_POOLING_RESULTS.md) and
+`results/2026/spatial_pooling/report.html` show actual completed fits, missing
+evidence and the bin-specific decision. Implemented software is not a certified
+reliability threshold. Existing national estimates, earlier pilot and hosted
+website remain intact.
+
+The [spatial statistical specification](docs/spatial_specification.md) records
+the exact estimand, grouping rules, approximate likelihood, priors, development
+selection and validation contract. The raw-register precision audit is separate
+from physical coordinate accuracy and does not rewrite frozen eligibility.
+
+```bash
+.venv-hierarchy/bin/python -m pip install -r requirements-spatial.txt
+# Cached inputs: existing spatial-feasibility audit plus the detailed boundary
+# archive identified in results/2026/spatial_pooling/geography_audit.json.
+OPENBLAS_NUM_THREADS=1 .venv-hierarchy/bin/python -m elections.spatial_runner group
+OPENBLAS_NUM_THREADS=1 .venv-hierarchy/bin/python -m elections.spatial_runner profile
+OPENBLAS_NUM_THREADS=1 .venv-hierarchy/bin/python scripts/audit_spatial_model.py
+# Complete staged workflow, resumable; resource budget stops new work honestly.
+OPENBLAS_NUM_THREADS=1 .venv-hierarchy/bin/python scripts/run_spatial_pooling.py --wall-seconds 3600
+.venv-hierarchy/bin/python scripts/build_spatial_report.py
+.venv-hierarchy/bin/python scripts/verify_spatial_outputs.py
+```
+
+Individual stages are available with `python -m elections.spatial_runner --help`.
+`screen` runs development simulations; `select` freezes a procedure using only
+development results; `validate` rejects missing selection locks and uses new
+streams/held-out municipalities. Longer confirmations preserve the original
+generated dataset and change only the computational budget. Timeouts and
+diagnostic warnings cannot authorize scale. A workflow that exhausts its wall
+budget reports pending work, not completion; invoke it again to resume.
+
+The offline report offers estimate/reliability colouring, original municipal
+boundaries and local group points/networks. Unsupported local metrics stay
+unavailable. Group points do not define electoral catchment polygons. Browser
+checks are in `scripts/check_spatial_browser.py` (Playwright/Chromium optional).
+
 ## Hosted visualization and published data
+
+The separate [model-agreement extension](MODEL_AGREEMENT_EXTENSION.md) adds joint
+behavioural pooling, paired whole-building resampling and cross-model agreement.
+Its actual execution is recorded in [MODEL_AGREEMENT_RESULTS.md](MODEL_AGREEMENT_RESULTS.md)
+and `results/2026/model_agreement/`. Model consensus is a robustness diagnostic;
+known-flow recovery and interval calibration remain separate requirements.
+
+```bash
+OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 .venv-hierarchy/bin/python -m elections.agreement_runner pilot --wall-seconds 7200
+# Inspect execution_state.json for completed jobs and measured remaining ETA.
+# Resume the same command to continue immutable completed work.
+.venv-hierarchy/bin/python -m elections.agreement_runner report
+# Larger separate stages: profile, observed, resampling, development.
+# select requires the complete development grid; validation requires that freeze.
+```
 
 **[Open the interactive map and flowcharts](https://pedro-loures.github.io/brazil-election-transitions-2026/)**
 
@@ -37,8 +169,11 @@ python -m http.server 8765 --bind 127.0.0.1 --directory docs
 
 Open `http://localhost:8765/`. Python dependencies are needed for analysis and
 tests, but not to browse the hosted visualization. After recomputing results
-and rebuilding the flow explorer/map, update the published files with
-`python scripts/prepare_publication.py`. GitHub Pages uses the `main` branch's
+and rebuilding the original baseline explorer/map, update its snapshot with
+`python scripts/prepare_publication.py`. The national replacement uses
+`scripts/build_national_site.py` and the separate release driver instead.
+The legacy publisher stops once the combined-model primary release is present.
+GitHub Pages uses the `main` branch's
 `/docs` directory; pushes updating that directory republish the site.
 
 ## Run

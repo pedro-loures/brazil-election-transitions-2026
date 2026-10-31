@@ -11,6 +11,8 @@ ROOT=Path(__file__).resolve().parents[1]
 
 
 def prepare():
+    if (ROOT/'docs/data/national/release.json').exists():
+        raise SystemExit('The combined model is now the primary publication. Use scripts/build_national_site.py and scripts/release_national.py; the legacy publisher must not overwrite it.')
     site=ROOT/"results/2026/flowcharts"
     if not (site/"data/maps/manifest.json").is_file():
         raise SystemExit("Build the flow explorer and map data before preparing publication.")

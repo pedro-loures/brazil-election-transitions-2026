@@ -1,0 +1,5 @@
+# Isolated environment: python -m venv --system-site-packages .venv-hierarchy
+-r requirements.txt
+numpyro==0.19.0
+jax[cpu]==0.6.2
+arviz==0.21.0

@@ -308,3 +308,53 @@ This is a focused literature review, not a systematic review or meta-analysis. S
 Access differed across works, as disclosed above. Some originals were accessible only as indexed passages or abstracts; S1 and S2 were checked bibliographically and interpreted through accessible original research that explains them. Publication years follow journal issue years, with differing online years noted. Assertions applying these works to the repository, proposed improvements, and the algebra in Section 5 are this review's reasoned assessments.
 
 No reviewed source directly evaluates this implementation or establishes that the thread's estimated individual movements occurred in the 2026 Brazilian election. The credible reading of the current output is a descriptive audit plus explicitly conditional ecological estimates, with uncertainty calibration and causal interpretation still requiring additional work.
+
+## 8. Sources added for the polling-place partial-pooling pilot
+
+Added 30 October 2026 during execution of [the polling-place plan](POLLING_PLACE_MODEL_PLAN.md). These four sources supplement the original seventeen; their role is to guide model construction and validation, not to certify the pilot's estimates. The final specification and access qualifications are in [docs/hierarchy_specification.md](docs/hierarchy_specification.md).
+
+### H1. Gelman (2006): joint multilevel fitting — conditional support
+
+**Reference:** Gelman, A. (2006). *Multilevel (Hierarchical) Modeling: What It Can and Cannot Do*. Technometrics, 48(3), 432–435. [DOI](https://doi.org/10.1198/004017005000000661); [author-hosted original](https://sites.stat.columbia.edu/gelman/research/published/multi2.pdf).
+
+**Supports:** Estimating group patterns together with their shared distribution can regularize sparse groups while retaining local variation. This motivates municipal logits plus polling-place deviations.
+
+**Qualifies:** The example concerns directly observed household outcomes, not unobserved voter transitions. Predictive improvement in that example neither establishes identification here nor supports a causal campaign claim. Original four-page paper examined.
+
+### H2. Gelman (2006): variance priors — support for sensitivity analysis
+
+**Reference:** Gelman, A. (2006). *Prior distributions for variance parameters in hierarchical models*. Bayesian Analysis, 1(3), 515–533. [DOI](https://doi.org/10.1214/06-BA117); [author-hosted original](https://stat.columbia.edu/~gelman/research/published/taumain.pdf).
+
+**Supports:** Explicit scale priors and sensitivity analysis when between-group variation is weakly informed, especially with few groups. This motivates reporting the heterogeneity posterior and refitting under tighter/wider assumptions.
+
+**Qualifies:** The paper discusses uniform and half-t choices and problems with supposedly noninformative inverse-gamma priors. It does not prescribe our half-normal scale or numerical values. Those are implementation choices requiring validation. Original indexed author manuscript and bibliographic details examined; one author-hosted mirror failed to open during this execution.
+
+### H3. Wakefield, Haneuse, Dobra and Teeple (2011): convolution and approximation — mixed
+
+**Reference:** Wakefield, J., Haneuse, S., Dobra, A., and Teeple, E. (2011). *Bayes computation for ecological inference*. Statistics in Medicine, 30(12), 1381–1396. [DOI](https://doi.org/10.1002/sim.4214); [author-hosted original](https://sites.stat.washington.edu/adobra/Files/Papers/wakefield-dobra-et.pdf).
+
+**Supports:** A likelihood for aggregate margins obtained by summing unobserved individual outcomes, with hierarchical logits. A normal approximation can reduce computation.
+
+**Challenges:** The authors exhibit approximation failure and emphasize ecological bias and auxiliary individual information. This is a reason to test our approximation, not an endorsement of it. Their principal 2×2 formulation is not our implemented 5×4/place model. Original paper examined, especially Sections 2, 3.1.2, 4–6.
+
+### H4. Morris, White and Crowther (2019): validation with known truth — direct workflow support
+
+**Reference:** Morris, T. P., White, I. R., and Crowther, M. J. (2019). *Using simulation studies to evaluate statistical methods*. Statistics in Medicine, 38(11), 2074–2102. [DOI](https://doi.org/10.1002/sim.8086); [open original article](https://pmc.ncbi.nlm.nih.gov/articles/PMC6492164/).
+
+**Supports:** Prespecifying aims, data-generating mechanisms, estimands, methods and performance measures (ADEMP); reporting failures and Monte Carlo error. This directly motivates identical simulated datasets for all models, expected-flow truth, coverage/error checks, and a scaling gate.
+
+**Qualifies:** Results depend on the simulated mechanisms. Thirty repetitions using one city's design cannot certify national performance. Original open article examined.
+
+The earlier status table describes the completed national baseline. The pilot now implements heterogeneous-model simulations, boundary and contextual stress tests, prior variants, and reliability displays; see [HIERARCHY_PILOT_RESULTS.md](HIERARCHY_PILOT_RESULTS.md) for execution outcomes. Cluster-bootstrap redesign, open-population transition modeling, external individual validation, and causal campaign identification remain separate, unfinished extensions.
+
+## 9. Spatial experiment and the overdispersion extension
+
+The source-by-source assessment in [SPATIAL_POOLING_FEASIBILITY.md](SPATIAL_POOLING_FEASIBILITY.md) adds Duque et al. (spatial regionalization), Bradley et al. (aggregation error), and Cawley and Talbot (selection/evaluation separation), alongside the contextual-bias and simulation papers above. These support parts of the experimental design and explain why grouping by distance or reaching a count target cannot establish reliability.
+
+**Distributional lineage:** Mosimann, J. E. (1962), *On the compound multinomial distribution, the multivariate β-distribution, and correlations among proportions*, Biometrika 49(1–2), 65–82. [Publisher record](https://academic.oup.com/biomet/article-abstract/49/1-2/65/279479); [DOI](https://doi.org/10.1093/biomet/49.1-2.65).
+
+The compound-multinomial family supplies the distributional background for the extension. This does not validate independent Dirichlet-multinomial origin rows, the selected priors, contextual covariates, or the normal margin approximation for these elections. Only the publisher's bibliographic record was verified for this additional historical reference; no full-text claims are made. The implemented moment formulas are derived and independently checked against exact small-count convolution and Monte Carlo simulation in this repository. See [the spatial specification](docs/spatial_specification.md).
+
+Overdispersion changes margin uncertainty; it does not reconstruct every section's latent rate matrix. Fitted mean allocations must still be tested against known heterogeneous transitions. Successful MCMC diagnostics establish computation under the model, not accurate individual-flow recovery. Current execution and incomplete validation are recorded in [SPATIAL_POOLING_RESULTS.md](SPATIAL_POOLING_RESULTS.md).
+
+**Monte Carlo confidence bounds:** Hoeffding, W. (1963), *Probability Inequalities for Sums of Bounded Random Variables*, JASA 58(301), 13–30. [DOI](https://doi.org/10.1080/01621459.1963.10500830); [original scan](https://www.cs.rpi.edu/academics/courses/spring06/random/hoefding.pdf). Theorem 1, equation (2.1), supports finite-sample bounds for independent bounded summaries. Our inversion and error allocation across three planned looks are implementation choices. The theorem was examined; it supports Monte Carlo uncertainty calculations, not the ecological transition model or geographic grouping assumptions.

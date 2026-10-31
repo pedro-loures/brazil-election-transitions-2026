@@ -3,6 +3,7 @@ __pycache__/
 /data/
 /results/
 .venv/
+.venv-hierarchy/
 /.agents/
 /.aws/
 /.codex/
